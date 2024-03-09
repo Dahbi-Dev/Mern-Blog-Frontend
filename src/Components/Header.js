@@ -9,12 +9,16 @@ export default function Header() {
     useEffect(() => {
         fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
             credentials: 'include',
-        }).then((response) => {
-            response.json().then((userInfo) => {
-                setUserInfo(userInfo);
-            });
-        });
-    }, [setUserInfo]);
+        })
+    }, []);
+    //     fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
+    //         credentials: 'include',
+    //     }).then((response) => {
+    //         response.json().then((userInfo) => {
+    //             setUserInfo(userInfo);
+    //         });
+    //     });
+    // }, [setUserInfo]);
 
     function logout() {
         fetch('https://mern-blog-backend-hmpo.onrender.com/logout', {
