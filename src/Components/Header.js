@@ -10,7 +10,7 @@ export default function Header() {
         fetch(
             'https://mern-blog-backend-hmpo.onrender.com/profile',{ 
                 credentials: "include",
-                // Authorization: `Bearer {TOKEN}`
+                Authorization: `Bearer {oUraKE1fcjvURpUOrTUoffDcfseM2PKdms0qVupryVpxz18upaeWMfF9y5gPsHol}`
              }
         ).then((response) => {
             response.json().then((userInfo) => {
