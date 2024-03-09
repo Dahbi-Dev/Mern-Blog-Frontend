@@ -4,7 +4,7 @@ import Post from "./post";
 export default function AllPosts(){
     const [posts, setPosts] = useState([])
     useEffect(()=>{
-        fetch('https://mern-blog-backend-hmpo.onrender.com:3001/post').then(response => {
+        fetch('https://mern-blog-backend-hmpo.onrender.com:/post').then(response => {
             response.json().then(posts => {
                 setPosts(posts);
 

@@ -14,7 +14,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true); // Set loading to true while making the request
 
-    const response = await fetch('https://mern-blog-backend-hmpo.onrender.com:3001/login', {
+    const response = await fetch('https://mern-blog-backend-hmpo.onrender.com/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
       headers: { 'Content-Type': 'application/json' },
