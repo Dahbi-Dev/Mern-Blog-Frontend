@@ -8,6 +8,7 @@ export default function Header() {
     
     useEffect(() => {
         fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
+            method: 'GET',
             credentials: 'include',
         }).then((response) => {
             response.json().then((userInfo) => {
