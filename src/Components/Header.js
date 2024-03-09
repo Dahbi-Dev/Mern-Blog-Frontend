@@ -8,8 +8,10 @@ export default function Header() {
     
     useEffect(() => {
         fetch(
-            'https://mern-blog-backend-hmpo.onrender.com/profile',
-            { credentials: "same-origin" }
+            'https://mern-blog-backend-hmpo.onrender.com/profile',{ 
+                credentials: "same-origin",
+                Authorization: `Bearer {TOKEN}`
+             }
         ).then((response) => {
             response.json().then((userInfo) => {
                 setUserInfo(userInfo);
