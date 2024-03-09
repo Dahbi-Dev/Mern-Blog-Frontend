@@ -7,7 +7,7 @@ export default function Header() {
 
     
     useEffect(() => {
-        fetch('http://localhost:3001/profile', {
+        fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
             credentials: 'include',
         }).then((response) => {
             response.json().then((userInfo) => {
@@ -17,7 +17,7 @@ export default function Header() {
     }, [setUserInfo]);
 
     function logout() {
-        fetch('http://localhost:3001/logout', {
+        fetch('https://mern-blog-backend-hmpo.onrender.com/logout', {
             credentials: 'include',
             method: 'post',
         }).then(() => {
@@ -36,7 +36,7 @@ export default function Header() {
             <nav>
                 {username && (
                     <>
-                        {username === 'Houssam' && (
+                        {username && (
                             <Link className="create-btn" to="/create">
                                 Create new post
                             </Link>

@@ -5,12 +5,13 @@ export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  // const [err , SetErr] = useState('')
 
   async function register(e) {
     e.preventDefault();
     setLoading(true); // Set loading to true while making the request
 
-    const res = await fetch('http://localhost:3001/register', {
+    const res = await fetch('https://mern-blog-backend-hmpo.onrender.com/register', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
       headers: { 'Content-Type': 'application/json' },
@@ -19,6 +20,7 @@ export default function RegisterPage() {
     if (res.status === 200) {
       alert('Registration Successful');
     } else {
+      // SetErr ='the user exist try to login'
       alert('Registration Failed');
     }
 
@@ -28,6 +30,7 @@ export default function RegisterPage() {
   return (
     <form className="register" onSubmit={register}>
       <h1>Register</h1>
+      {/* <p>{err}</p> */}
       <input
         id="username"
         autoComplete="true"

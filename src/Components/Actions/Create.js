@@ -37,7 +37,7 @@ function Create() {
 
         ev.preventDefault();
     
-    const response = await fetch('http://localhost:3001/post', {
+    const response = await fetch('https://mern-blog-backend-hmpo.onrender.com/post', {
             method: 'post',
             body: data,
             credentials: 'include',
