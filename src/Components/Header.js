@@ -1,16 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { Navigate } from 'react-router-dom';
-
-
 
 export default function Header() {
     const { setUserInfo, userInfo } = useContext(UserContext);
-   
-    const [redirect ,setRedirect] = useState(false)
 
-
+    
     useEffect(() => {
         fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
             credentials: 'include',
@@ -28,11 +23,7 @@ export default function Header() {
         }).then(() => {
             // Handle success, e.g., redirect to the login page
             setUserInfo(null);
-            setRedirect(true)
         });
-        if(redirect){
-            return <Navigate to={'/'} />
-        }
     }
 
     const username = userInfo?.username;
