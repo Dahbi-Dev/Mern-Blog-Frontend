@@ -7,9 +7,10 @@ export default function Header() {
 
     
     useEffect(() => {
-        fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
-            credentials: 'include',
-        }).then((response) => {
+        fetch(
+            'https://mern-blog-backend-hmpo.onrender.com/profile',
+            { credentials: "same-origin" }
+        ).then((response) => {
             response.json().then((userInfo) => {
                 setUserInfo(userInfo);
             });
