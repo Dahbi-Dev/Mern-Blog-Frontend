@@ -7,7 +7,7 @@ export default function Header() {
 
     
     useEffect(() => {
-        fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
+        fetch('https://mern-blog-backend-hmpo.onrender.com:3001/profile', {
             credentials: 'include',
         }).then((response) => {
             response.json().then((userInfo) => {
@@ -17,7 +17,7 @@ export default function Header() {
     }, [setUserInfo]);
 
     function logout() {
-        fetch('https://mern-blog-backend-hmpo.onrender.com/logout', {
+        fetch('https://mern-blog-backend-hmpo.onrender.com:3001/logout', {
             credentials: 'include',
             method: 'post',
         }).then(() => {

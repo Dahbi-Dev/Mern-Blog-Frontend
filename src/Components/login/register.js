@@ -11,7 +11,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true); // Set loading to true while making the request
 
-    const res = await fetch('https://mern-blog-backend-hmpo.onrender.com/register', {
+    const res = await fetch('https://mern-blog-backend-hmpo.onrender.com:3001/register', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
       headers: { 'Content-Type': 'application/json' },

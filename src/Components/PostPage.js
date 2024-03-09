@@ -12,7 +12,7 @@ export default function PostPage() {
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
-        fetch(`https://mern-blog-backend-hmpo.onrender.com/post/${id}`)
+        fetch(`https://mern-blog-backend-hmpo.onrender.com:3001/post/${id}`)
             .then((response) => {
                 response.json().then((postInfo) => {
                     setPostInfo(postInfo);
@@ -22,7 +22,7 @@ export default function PostPage() {
     }, [id]);
 
     const handleDelete = () => {
-        fetch(`https://mern-blog-backend-hmpo.onrender.com/post/${id}`, {
+        fetch(`https://mern-blog-backend-hmpo.onrender.com:3001/post/${id}`, {
             method: 'DELETE',
             credentials: 'include',
         })
@@ -81,7 +81,7 @@ export default function PostPage() {
                 </div>
             )}
             <div className="" style={{ marginTop: '15px' }}>
-                <img className="imagePage" src={`https://mern-blog-backend-hmpo.onrender.com/${postInfo.cover}`} alt="img" />
+                <img className="imagePage" src={`https://mern-blog-backend-hmpo.onrender.com:3001/${postInfo.cover}`} alt="img" />
             </div>
 
             <div  className='content'

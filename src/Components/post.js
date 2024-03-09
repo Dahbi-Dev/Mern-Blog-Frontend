@@ -28,7 +28,7 @@ export default function Post({ _id, title, summary, cover, content, createdAt, a
       <div className="post">
         <div className="image">
           <Link className='links' to={`/PostPage/${_id}`}>
-            <img src={'https://mern-blog-backend-hmpo.onrender.com/' + cover} alt="thumbnail" />
+            <img src={'https://mern-blog-backend-hmpo.onrender.com:3001/' + cover} alt="thumbnail" />
           </Link>
         </div>
         <div className="text">
