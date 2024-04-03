@@ -5,17 +5,14 @@ import { UserContext } from '../UserContext';
 export default function Header() {
     const { setUserInfo, userInfo } = useContext(UserContext);
 
-    
     useEffect(() => {
         fetch('https://mern-blog-backend-hmpo.onrender.com/profile', {
             credentials: 'include',
-           
         }).then((response) => {
             response.json().then((userInfo) => {
                 setUserInfo(userInfo);
             });
         });
-        
     }, [setUserInfo]);
 
     function logout() {
@@ -29,6 +26,7 @@ export default function Header() {
     }
 
     const username = userInfo?.username;
+    const isHoussam = username === 'Houssam';
 
     return (
         <header>
@@ -38,7 +36,7 @@ export default function Header() {
             <nav>
                 {username && (
                     <>
-                        {username && (
+                        {isHoussam && (
                             <Link className="create-btn" to="/create">
                                 Create new post
                             </Link>
