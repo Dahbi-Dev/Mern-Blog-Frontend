@@ -1,11 +1,12 @@
-// RegisterPage.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2, UserIcon, KeyIcon, AlertCircle } from 'lucide-react';
+import { UserContext } from '../../UserContext';
 
 export default function RegisterPage() {
   const api = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+  const { setUserInfo } = useContext(UserContext);
   
   const [formData, setFormData] = useState({
     username: '',
@@ -39,6 +40,22 @@ export default function RegisterPage() {
     return true;
   };
 
+  const performLogin = async (credentials) => {
+    const response = await fetch(`${api}/login`, {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed after registration');
+    }
+
+    const data = await response.json();
+    setUserInfo(data);
+  };
+
   const register = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -47,21 +64,24 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const res = await fetch(`${api}/register`, {
+      // First, register the user
+      const registerRes = await fetch(`${api}/register`, {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const data = await res.json();
+      const registerData = await registerRes.json();
 
-      if (res.ok) {
-        navigate('/login');
+      if (registerRes.ok) {
+        // If registration is successful, immediately log in
+        await performLogin(formData);
+        navigate('/'); // Navigate to home page after successful registration and login
       } else {
-        setError(data.message || 'Registration failed');
+        setError(registerData.message || 'Registration failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message || 'Network error. Please try again.');
     } finally {
       setLoading(false);
     }

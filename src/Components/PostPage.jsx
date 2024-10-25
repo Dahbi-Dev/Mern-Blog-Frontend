@@ -3,6 +3,8 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Pencil, Trash2, User, Calendar } from "lucide-react";
+import PostReactions from "./Reactions/PostReactions";
+import PostComments from "./Reactions/PostComments";
 
 export default function PostPage() {
   const api = process.env.REACT_APP_API_URL;
@@ -30,7 +32,11 @@ export default function PostPage() {
     fetchPost();
   }, [id, api]);
 
-  const handleDelete = async () => {
+  const showConfirmDialog = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
     try {
       const response = await fetch(`${api}/post/${id}`, {
         method: "DELETE",
@@ -40,10 +46,10 @@ export default function PostPage() {
         const data = await response.json();
         throw new Error(data.message || "Failed to delete post");
       }
-      setShowDeleteDialog(false);
       setRedirect(true);
     } catch (err) {
       setError(err.message);
+    } finally {
       setShowDeleteDialog(false);
     }
   };
@@ -65,11 +71,14 @@ export default function PostPage() {
   }
   if (!postInfo) return null;
 
-  const isUserAuthorized = userInfo?.id === postInfo?.author?._id || userInfo?.username === "Houssam";
+  const isUserAuthorized =
+    userInfo?.id === postInfo?.author?._id || userInfo?.username === "Houssam";
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-28 bg-white dark:bg-gray-900">
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">{postInfo.title}</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        {postInfo.title}
+      </h1>
 
       <div className="flex flex-wrap gap-4 mb-6 text-gray-600 dark:text-gray-300">
         <div className="flex items-center gap-2">
@@ -92,12 +101,36 @@ export default function PostPage() {
             <span>Edit Post</span>
           </Link>
           <button
-            onClick={() => setShowDeleteDialog(true)}
+            onClick={showConfirmDialog}
             className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 dark:bg-red-700 transition-colors"
           >
             <Trash2 className="w-5 h-5" />
             <span>Delete Post</span>
           </button>
+        </div>
+      )}
+
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-sm mx-auto">
+            <p className="text-lg mb-4 dark:text-gray-100">
+              Are you sure you want to delete this post?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteDialog(false)}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -113,6 +146,13 @@ export default function PostPage() {
         className="prose dark:prose-invert max-w-none"
         dangerouslySetInnerHTML={{ __html: postInfo.content }}
       />
+
+      {/* Add the new components here */}
+      <div className="border-t dark:border-gray-800 pt-6">
+        <PostReactions postId={postInfo._id} />
+      </div>
+
+      <PostComments postId={postInfo._id} />
     </article>
   );
 }

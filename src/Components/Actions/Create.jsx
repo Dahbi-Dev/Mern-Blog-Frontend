@@ -67,7 +67,7 @@ export default function CreatePost() {
     
   return (
     <form 
-      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg"
+      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg py-20"
       onSubmit={createNewPost}
     >
       <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Create New Post</h1>
@@ -108,7 +108,7 @@ export default function CreatePost() {
       />
 
       <button
-        className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mt-10"
         type="submit"
       >
         Create Post

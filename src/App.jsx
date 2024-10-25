@@ -10,22 +10,37 @@ import Update from "./Components/Actions/Edit";
 import PostPage from "./Components/PostPage";
 import Edit from "./Components/Actions/Edit";
 import CookieConsentModal from "./Components/CookieConsentModal";
+import { useEffect } from "react";
 
 export default function App() {
+  useEffect(() => {
+    // Check for saved theme preference or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   return (
-    <UserContextProvider>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<AllPosts />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/create" element={<Create />} />
-          <Route path="/update" element={<Update />} />
-          <Route path="/postPage/:id" element={<PostPage />} />
-          <Route path="/edit/:id" element={<Edit />} />
-        </Route>
-      </Routes>
-      <CookieConsentModal />
-    </UserContextProvider>
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+      <UserContextProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<AllPosts />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/create" element={<Create />} />
+            <Route path="/update" element={<Update />} />
+            <Route path="/postPage/:id" element={<PostPage />} />
+            <Route path="/edit/:id" element={<Edit />} />
+          </Route>
+        </Routes>
+        <CookieConsentModal />
+      </UserContextProvider>
+    </div>
   );
 }

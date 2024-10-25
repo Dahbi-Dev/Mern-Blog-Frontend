@@ -97,65 +97,61 @@ export default function EditPost() {
 
   return (
     <form
-      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg"
+      className="max-w-4xl mx-auto my-8 p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg py-20"
       onSubmit={updatePost}
     >
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Edit Post</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        Edit Post
+      </h1>
 
-      <div className="space-y-6">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(ev) => setTitle(ev.target.value)}
-          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <input
+        type="text"
+        placeholder="Title"
+        value={title}
+        onChange={(ev) => setTitle(ev.target.value)}
+        className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
 
-        <input
-          type="text"
-          placeholder="Summary"
-          value={summary}
-          onChange={(ev) => setSummary(ev.target.value)}
-          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <input
+        type="text"
+        placeholder="Summary"
+        value={summary}
+        onChange={(ev) => setSummary(ev.target.value)}
+        className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
 
-        <div className="relative">
-          <input
-            type="file"
-            onChange={(ev) => setFiles(ev.target.files)}
-            className="hidden"
-            id="file-upload"
-            accept="image/*"
-          />
-          <label
-            htmlFor="file-upload"
-            className="flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed dark:border-gray-700 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
-          >
-            <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            <span className="text-gray-600 dark:text-gray-300">
-              {files?.[0]?.name || "Choose a new image (optional)"}
-            </span>
-          </label>
-        </div>
+      <input
+        type="file"
+        onChange={(ev) => setFiles(ev.target.files)}
+        className="w-full mb-4 p-3 hidden"
+        id="file-upload"
+        accept="image/*"
+      />
+      <label
+        htmlFor="file-upload"
+        className="flex items-center justify-center gap-2 px-4 py-2 mb-4 border-2 border-dashed dark:border-gray-700 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+      >
+        <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+        <span className="text-gray-600 dark:text-gray-300">
+          {files?.[0]?.name || "Choose a new image (optional)"}
+        </span>
+      </label>
 
-        <div className="mb-6">
-          <ReactQuill
-            value={content}
-            onChange={setContent}
-            theme="snow"
-            modules={modules}
-            formats={formats}
-            className="h-64"
-          />
-        </div>
+      <ReactQuill
+        value={content}
+        onChange={setContent}
+        theme="snow"
+        modules={modules}
+        formats={formats}
+        className="h-64 mb-10 lg:mb-4 md:mb-4 xs:mb-4 "
+      />
 
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Update Post
-        </button>
-      </div>
+      <button
+        type="submit"
+        className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mt-10"
+      >
+        Update Post
+      </button>
     </form>
   );
 }
