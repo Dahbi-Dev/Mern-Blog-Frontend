@@ -38,7 +38,6 @@ export default function PostPage() {
     
   }, [id, api]);
 
-  console.log(userInfo)
 
   const showConfirmDialog = () => {
     setShowDeleteDialog(true);

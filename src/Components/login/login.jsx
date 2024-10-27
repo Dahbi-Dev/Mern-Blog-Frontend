@@ -33,10 +33,10 @@ export default function LoginPage() {
       setError('Please enter both email and password');
       return;
     }
-
+  
     setLoading(true);
     setError('');
-
+  
     try {
       const response = await fetch(`${api}/login`, {
         method: 'POST',
@@ -44,10 +44,11 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
+        // This will now automatically save to session storage
         setUserInfo(data);
         navigate('/');
       } else {

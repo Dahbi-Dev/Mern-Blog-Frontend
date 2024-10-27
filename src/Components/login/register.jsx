@@ -45,23 +45,27 @@ export default function RegisterPage() {
     return true;
   };
 
-  const performLogin = async (credentials) => {
-    const response = await fetch(`${api}/login`, {
-      method: 'POST',
-      body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-    });
+// In RegisterPage.jsx
+const performLogin = async (credentials) => {
+  const response = await fetch(`${api}/login`, {
+    method: 'POST',
+    body: JSON.stringify({
+      email: credentials.email,
+      password: credentials.password
+    }),
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
 
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
+  if (!response.ok) {
+    throw new Error('Login failed');
+  }
 
-    const data = await response.json();
-    setUserInfo(data);
-    return data;
-  };
-
+  const data = await response.json();
+  // This will now automatically save to session storage
+  setUserInfo(data);
+  return data;
+};
   const register = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
