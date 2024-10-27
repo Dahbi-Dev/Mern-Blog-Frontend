@@ -16,7 +16,23 @@ const AllPosts = () => {
           throw new Error('Failed to fetch posts');
         }
         const data = await response.json();
+        
         setPosts(data);
+
+        // Check if all posts have `author` set to null
+        const allAuthorsNull = data.every(post => post.author === null);
+        if (allAuthorsNull && data.length > 0) {
+          // Delete all posts with null author
+          await fetch(`${api}/posts/author-null`, {
+            method: 'DELETE',
+          });
+
+          // Fetch the updated posts list after deletion
+          const updatedResponse = await fetch(`${api}/posts`);
+          const updatedData = await updatedResponse.json();
+          setPosts(updatedData);
+        }
+
       } catch (err) {
         setError(err.message);
         console.error('Error fetching posts:', err);

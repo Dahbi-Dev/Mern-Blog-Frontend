@@ -16,6 +16,7 @@ function Post({ _id, title, summary, cover, createdAt, author }) {
 
   return (
     <div className="bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+
       <Link
         to={`/postPage/${_id}`}
         className="block aspect-video overflow-hidden"
@@ -41,7 +42,7 @@ function Post({ _id, title, summary, cover, createdAt, author }) {
         <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
-            <span>{author.username}</span>
+            <span>{author?.username || "Anonymous"}</span>
           </div>
           <div className="flex items-center gap-1">
             <Calendar className="w-4 h-4" />

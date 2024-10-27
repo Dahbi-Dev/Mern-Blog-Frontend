@@ -16,7 +16,7 @@ const PostReactions = ({ postId }) => {
 
   useEffect(() => {
     fetchReactions();
-  }, [postId]);
+  }, [postId, api]);
 
   const fetchReactions = async () => {
     try {
@@ -24,13 +24,7 @@ const PostReactions = ({ postId }) => {
       const data = await response.json();
       setReactions(data);
       
-      if (userInfo) {
-        const userReactionResponse = await fetch(`${api}/post/${postId}/reaction`, {
-          credentials: 'include',
-        });
-        const userReactionData = await userReactionResponse.json();
-        setUserReaction(userReactionData.type);
-      }
+     
     } catch (error) {
       console.error('Error fetching reactions:', error);
     }
@@ -62,7 +56,7 @@ const PostReactions = ({ postId }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${api}/post/${postId}/reaction`, {
+      const response = await fetch(`${api}/post/${postId}/addreaction`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Pencil, Trash2, User, Calendar } from "lucide-react";
 import PostReactions from "./Reactions/PostReactions";
-import PostComments from "./Reactions/PostComments";
+import PostComments from "./Comments/PostComments";
 
 export default function PostPage() {
   const api = process.env.REACT_APP_API_URL;
@@ -22,7 +22,12 @@ export default function PostPage() {
         const response = await fetch(`${api}/post/${id}`);
         if (!response.ok) throw new Error("Failed to fetch post");
         const data = await response.json();
-        setPostInfo(data);
+
+        // Set postInfo, defaulting to "Anonymous" if author is not provided
+        setPostInfo({
+          ...data,
+          author: data.author || { username: "Anonymous" },
+        });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -30,7 +35,10 @@ export default function PostPage() {
       }
     };
     fetchPost();
+    
   }, [id, api]);
+
+  console.log(userInfo)
 
   const showConfirmDialog = () => {
     setShowDeleteDialog(true);
@@ -64,7 +72,7 @@ export default function PostPage() {
   }
   if (error) {
     return (
-      <div className="max-w-2xl mx-auto mt-8 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="max-w-2xl mx-auto bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-lg p-20 mt-20">
         <p className="text-red-600 dark:text-red-200">{error}</p>
       </div>
     );
@@ -72,7 +80,8 @@ export default function PostPage() {
   if (!postInfo) return null;
 
   const isUserAuthorized =
-    userInfo?.id === postInfo?.author?._id || userInfo?.username === "Houssam";
+    userInfo?.id === postInfo?.author?._id || userInfo?.email === "admin@admin.com";
+    
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-28 bg-white dark:bg-gray-900">
@@ -147,7 +156,6 @@ export default function PostPage() {
         dangerouslySetInnerHTML={{ __html: postInfo.content }}
       />
 
-      {/* Add the new components here */}
       <div className="border-t dark:border-gray-800 pt-6">
         <PostReactions postId={postInfo._id} />
       </div>

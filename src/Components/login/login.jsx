@@ -1,16 +1,18 @@
-// LoginPage.js
 import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../../UserContext';
-import { Loader2, UserIcon, KeyIcon, AlertCircle } from 'lucide-react';
+import { Loader2, MailIcon, KeyIcon, AlertCircle } from 'lucide-react';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 export default function LoginPage() {
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+
   const api = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const { setUserInfo } = useContext(UserContext);
   
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
   const [loading, setLoading] = useState(false);
@@ -27,8 +29,8 @@ export default function LoginPage() {
 
   const login = async (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.password) {
-      setError('Please enter both username and password');
+    if (!formData.email || !formData.password) {
+      setError('Please enter both email and password');
       return;
     }
 
@@ -49,7 +51,7 @@ export default function LoginPage() {
         setUserInfo(data);
         navigate('/');
       } else {
-        setError(data.message || 'Invalid username or password');
+        setError(data.message || 'Invalid email or password');
       }
     } catch (err) {
       setError('Network error. Please try again.');
@@ -83,26 +85,28 @@ export default function LoginPage() {
 
           <div className="space-y-4 rounded-md shadow-sm">
             <div>
-              <label htmlFor="username" className="sr-only">
-                Username
+              <label htmlFor="email" className="sr-only">
+                Email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <UserIcon className="h-5 w-5 text-gray-400" />
+                  <MailIcon className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  name="username"
-                  type="text"
+                  name="email"
+                  type="email"
                   required
                   className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-800 sm:text-sm"
-                  placeholder="Username"
-                  value={formData.username}
+                  placeholder="Email address"
+                  value={formData.email}
                   onChange={handleChange}
                   disabled={loading}
-                  autoComplete="username"
+                  autoComplete="email"
                 />
               </div>
             </div>
+
+            
 
             <div>
               <label htmlFor="password" className="sr-only">
@@ -127,6 +131,18 @@ export default function LoginPage() {
             </div>
           </div>
 
+
+          <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowForgotPassword(true)}
+            className="text-sm text-orange-600 hover:text-orange-500"
+          >
+            Forgot your password?
+          </button>
+        </div>
+
+
           <button
             type="submit"
             disabled={loading}
@@ -138,7 +154,16 @@ export default function LoginPage() {
               'Sign in'
             )}
           </button>
+
+       
         </form>
+        {/* Close the form here */}
+      
+      <ForgotPasswordModal 
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
+
       </div>
     </div>
   );

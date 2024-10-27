@@ -10,29 +10,16 @@ const PostComments = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem('theme') === 'dark'
-  );
   const api = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     fetchComments();
   }, [postId]);
 
-  useEffect(() => {
-    // Apply the dark mode setting based on `isDarkMode` state
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
   const fetchComments = async () => {
     try {
       const response = await fetch(`${api}/post/${postId}/comments`);
+      if (!response.ok) throw new Error('Failed to fetch comments');
       const data = await response.json();
       setComments(data);
     } catch (error) {
@@ -57,11 +44,11 @@ const PostComments = ({ postId }) => {
         credentials: 'include',
         body: JSON.stringify({ content: newComment })
       });
-      
-      if (response.ok) {
-        await fetchComments();
-        setNewComment('');
-      }
+
+      if (!response.ok) throw new Error('Failed to post comment');
+
+      await fetchComments();
+      setNewComment('');
     } catch (error) {
       console.error('Error posting comment:', error);
     } finally {
@@ -69,21 +56,11 @@ const PostComments = ({ postId }) => {
     }
   };
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   return (
     <div className="mt-8">
-      <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+      <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
         <MessageSquare className="w-6 h-6" />
         Comments ({comments.length})
-        <button
-          onClick={toggleDarkMode}
-          className="ml-auto p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-        </button>
       </h3>
 
       <form onSubmit={handleSubmit} className="mb-6">
@@ -92,14 +69,13 @@ const PostComments = ({ postId }) => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder={userInfo ? "Write a comment..." : "Login to comment"}
-            className="flex-1 p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+            className="flex-1 p-3 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
             disabled={!userInfo || loading}
           />
           <button
             type="submit"
             disabled={!userInfo || loading}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            onClick={() => !userInfo && navigate('/login')}
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />

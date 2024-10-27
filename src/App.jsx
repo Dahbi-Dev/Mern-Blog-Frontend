@@ -11,10 +11,11 @@ import PostPage from "./Components/PostPage";
 import Edit from "./Components/Actions/Edit";
 import CookieConsentModal from "./Components/CookieConsentModal";
 import { useEffect } from "react";
+import AdminDashboard from "./Admin/AdminDashboard";
 
 export default function App() {
   useEffect(() => {
-    // Check for saved theme preference or system preference
+    // Theme handling
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="/create" element={<Create />} />
             <Route path="/update" element={<Update />} />
             <Route path="/postPage/:id" element={<PostPage />} />
+            <Route path="/adminDashboard" element={<AdminDashboard />} />
             <Route path="/edit/:id" element={<Edit />} />
           </Route>
         </Routes>
