@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { UserContext } from '../../UserContext';
-import { Loader2, MailIcon, KeyIcon, AlertCircle } from 'lucide-react';
-import { ForgotPasswordModal } from './ForgotPasswordModal';
+import React, { useContext, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "../../UserContext";
+import { Loader2, MailIcon, KeyIcon, AlertCircle } from "lucide-react";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
 
 export default function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -10,52 +10,60 @@ export default function LoginPage() {
   const api = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const { setUserInfo } = useContext(UserContext);
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    setError('');
+    setError("");
+  };
+
+  const performLogin = async (credentials) => {
+    const response = await fetch(`${api}/login`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password,
+      }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Login failed");
+    }
+
+    const data = await response.json();
+    // This will now automatically save to localStorage
+    setUserInfo(data);
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    return data;
   };
 
   const login = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setError('Please enter both email and password');
+      setError("Please enter both email and password");
       return;
     }
-  
+
     setLoading(true);
-    setError('');
-  
+    setError("");
+
     try {
-      const response = await fetch(`${api}/login`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        // This will now automatically save to session storage
-        setUserInfo(data);
-        navigate('/');
-      } else {
-        setError(data.message || 'Invalid email or password');
-      }
+      await performLogin(formData);
+      navigate("/");
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -69,8 +77,11 @@ export default function LoginPage() {
             Welcome back
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="font-medium text-orange-600 hover:text-orange-500"
+            >
               Register here
             </Link>
           </p>
@@ -85,6 +96,7 @@ export default function LoginPage() {
           )}
 
           <div className="space-y-4 rounded-md shadow-sm">
+            {/* Email input */}
             <div>
               <label htmlFor="email" className="sr-only">
                 Email
@@ -107,8 +119,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            
-
+            {/* Password input */}
             <div>
               <label htmlFor="password" className="sr-only">
                 Password
@@ -132,39 +143,37 @@ export default function LoginPage() {
             </div>
           </div>
 
-
           <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setShowForgotPassword(true)}
-            className="text-sm text-orange-600 hover:text-orange-500"
-          >
-            Forgot your password?
-          </button>
-        </div>
+            {/* Forgot password button */}
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="text-sm text-orange-600 hover:text-orange-500"
+            >
+              Forgot your password?
+            </button>
+          </div>
 
-
+          {/* Login button */}
           <button
             type="submit"
             disabled={loading}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Loader2 className="animate-spin h -5 w-5" />
             ) : (
-              'Sign in'
+              "Sign in"
             )}
           </button>
-
-       
         </form>
-        {/* Close the form here */}
-      
-      <ForgotPasswordModal 
-        isOpen={showForgotPassword}
-        onClose={() => setShowForgotPassword(false)}
-      />
 
+        {/* Close the form here */}
+
+        <ForgotPasswordModal
+          isOpen={showForgotPassword}
+          onClose={() => setShowForgotPassword(false)}
+        />
       </div>
     </div>
   );

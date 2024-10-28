@@ -7,7 +7,7 @@ export default function RegisterPage() {
   const api = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const { setUserInfo } = useContext(UserContext);
-  
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -18,9 +18,9 @@ export default function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     setError('');
   };
@@ -45,31 +45,32 @@ export default function RegisterPage() {
     return true;
   };
 
-// In RegisterPage.jsx
-const performLogin = async (credentials) => {
-  const response = await fetch(`${api}/login`, {
-    method: 'POST',
-    body: JSON.stringify({
-      email: credentials.email,
-      password: credentials.password
-    }),
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-  });
+  const performLogin = async (credentials) => {
+    const response = await fetch(`${api}/login`, {
+      method: 'POST',
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
 
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
+    if (!response.ok) {
+      throw new Error('Login failed');
+    }
 
-  const data = await response.json();
-  // This will now automatically save to session storage
-  setUserInfo(data);
-  return data;
-};
+    const data = await response.json();
+    // This will now automatically save to localStorage
+    setUserInfo(data);
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    return data;
+  };
+
   const register = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setLoading(true);
     setError('');
 
@@ -130,8 +131,11 @@ const performLogin = async (credentials) => {
           )}
 
           <div className="space-y-4 rounded-md shadow-sm">
+            {/* Username input */}
             <div>
-              <label htmlFor="username" className="sr-only">Username</label>
+              <label htmlFor="username" className="sr-only">
+                Username
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <UserIcon className="h-5 w-5 text-gray-400" />
@@ -150,8 +154,11 @@ const performLogin = async (credentials) => {
               </div>
             </div>
 
+            {/* Email input */}
             <div>
-              <label htmlFor="email" className="sr-only">Email</label>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <MailIcon className="h-5 w-5 text-gray-400" />
@@ -170,8 +177,11 @@ const performLogin = async (credentials) => {
               </div>
             </div>
 
+            {/* Password input */}
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <KeyIcon className="h-5 w-5 text-gray-400" />
@@ -191,6 +201,7 @@ const performLogin = async (credentials) => {
             </div>
           </div>
 
+          {/* Register button */}
           <button
             type="submit"
             disabled={loading}
