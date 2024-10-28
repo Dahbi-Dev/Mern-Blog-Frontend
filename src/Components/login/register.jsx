@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, UserIcon, KeyIcon, AlertCircle } from 'lucide-react';
+import { Loader2, UserIcon, KeyIcon, AlertCircle, Mail } from 'lucide-react';
 import { UserContext } from '../../UserContext';
 
 export default function RegisterPage() {
@@ -10,6 +10,7 @@ export default function RegisterPage() {
   
   const [formData, setFormData] = useState({
     username: '',
+    email:'',
     password: '',
   });
   const [loading, setLoading] = useState(false);
@@ -69,7 +70,6 @@ export default function RegisterPage() {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
       });
 
       const registerData = await registerRes.json();
@@ -117,9 +117,7 @@ export default function RegisterPage() {
                 Username
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <UserIcon className="h-5 w-5 text-gray-400" />
-                </div>
+               
                 <input
                   name="username"
                   type="text"
@@ -131,6 +129,30 @@ export default function RegisterPage() {
                   disabled={loading}
                   autoComplete="username"
                 />
+                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <UserIcon className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="email" className="sr-only">
+                email
+              </label>
+              <div className="relative">
+                <input
+                  name="email"
+                  type="text"
+                  required
+                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-800 sm:text-sm"
+                  placeholder="Email@gamil.com "
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={loading}
+                  autoComplete="email"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
               </div>
             </div>
 
@@ -139,9 +161,7 @@ export default function RegisterPage() {
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <KeyIcon className="h-5 w-5 text-gray-400" />
-                </div>
+                
                 <input
                   name="password"
                   type="password"
@@ -153,6 +173,9 @@ export default function RegisterPage() {
                   disabled={loading}
                   autoComplete="new-password"
                 />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <KeyIcon className="h-5 w-5 text-gray-400" />
+                </div>
               </div>
             </div>
           </div>
