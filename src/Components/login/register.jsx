@@ -69,6 +69,7 @@ export default function RegisterPage() {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
 
       const registerData = await registerRes.json();
