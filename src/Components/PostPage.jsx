@@ -35,9 +35,7 @@ export default function PostPage() {
       }
     };
     fetchPost();
-    
   }, [id, api]);
-
 
   const showConfirmDialog = () => {
     setShowDeleteDialog(true);
@@ -79,8 +77,7 @@ export default function PostPage() {
   if (!postInfo) return null;
 
   const isUserAuthorized =
-    userInfo?.id === postInfo?.author?._id || userInfo?.email === "admin@admin.com";
-    
+    userInfo?.id === postInfo?.author?._id || userInfo?.username === "admin";
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-28 bg-white dark:bg-gray-900">
