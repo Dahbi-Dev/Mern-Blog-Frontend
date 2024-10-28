@@ -14,26 +14,39 @@ const PostReactions = ({ postId }) => {
   const [selectedReactionType, setSelectedReactionType] = useState(null);
   const api = process.env.REACT_APP_API_URL;
 
-;
+  const fetchUserReaction = async () => {
+    if (!userInfo) return;
+    try {
+      const response = await fetch(`${api}/post/${postId}/reactions/user`, {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      setUserReaction(data.type);
+    } catch (error) {
+      console.error('Error fetching user reaction:', error);
+    }
+  };
 
   const fetchReactions = async () => {
     try {
       const response = await fetch(`${api}/post/${postId}/reactions`);
       const data = await response.json();
       setReactions(data);
-      
-     
     } catch (error) {
       console.error('Error fetching reactions:', error);
     }
   };
+
   useEffect(() => {
     fetchReactions();
-  }, [postId, api])
+    fetchUserReaction();
+  }, [postId, api, userInfo]);
 
   const fetchReactionUsers = async (type) => {
     try {
-      const response = await fetch(`${api}/post/${postId}/reactions/users/${type}`);
+      const response = await fetch(`${api}/post/${postId}/reactions/users/${type}`, {
+        credentials: 'include'
+      });
       const data = await response.json();
       setReactionUsers(prev => ({ ...prev, [type]: data }));
     } catch (error) {
@@ -65,6 +78,8 @@ const PostReactions = ({ postId }) => {
       });
 
       if (response.ok) {
+        // Update the local state based on the response
+        setUserReaction(prevReaction => prevReaction === type ? null : type);
         await fetchReactions();
         setReactionUsers({}); // Reset reaction users cache to force refresh
       }
@@ -162,7 +177,7 @@ const PostReactions = ({ postId }) => {
             <div className="space-y-2">
               {reactionUsers[selectedReactionType]?.map((user) => (
                 <div
-                  key={user._id || user.id}
+                  key={user.id}
                   className="p-2 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-200 flex items-center gap-2"
                 >
                   <UserCircle2 className="w-5 h-5" />

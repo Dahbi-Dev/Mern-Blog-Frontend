@@ -44,7 +44,7 @@ export function UserContextProvider({ children }) {
 
       if (!response.ok) {
         if (response.status === 401) {
-          // Clear localStorage if unauthorized
+          // Clear local storage if unauthorized
           setUserInfo(null);
           localStorage.removeItem('userInfo');
           return;
@@ -85,7 +85,7 @@ export function UserContextProvider({ children }) {
         throw new Error('Logout failed');
       }
 
-      // Clear user data from state and localStorage
+      // Clear user data from state and storage
       setUserInfo(null);
       localStorage.removeItem('userInfo');
     } catch (err) {

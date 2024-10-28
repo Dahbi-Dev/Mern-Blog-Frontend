@@ -1,16 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, UserIcon, KeyIcon, AlertCircle, MailIcon } from 'lucide-react';
+import { Loader2, UserIcon, KeyIcon, AlertCircle } from 'lucide-react';
 import { UserContext } from '../../UserContext';
 
 export default function RegisterPage() {
   const api = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const { setUserInfo } = useContext(UserContext);
-
+  
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
     password: '',
   });
   const [loading, setLoading] = useState(false);
@@ -18,24 +17,20 @@ export default function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
     setError('');
   };
 
   const validateForm = () => {
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.username || !formData.password) {
       setError('All fields are required');
       return false;
     }
     if (formData.username.length < 4) {
       setError('Username must be at least 4 characters long');
-      return false;
-    }
-    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      setError('Please enter a valid email address');
       return false;
     }
     if (formData.password.length < 6) {
@@ -48,33 +43,28 @@ export default function RegisterPage() {
   const performLogin = async (credentials) => {
     const response = await fetch(`${api}/login`, {
       method: 'POST',
-      body: JSON.stringify({
-        email: credentials.email,
-        password: credentials.password,
-      }),
+      body: JSON.stringify(credentials),
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
 
     if (!response.ok) {
-      throw new Error('Login failed');
+      throw new Error('Login failed after registration');
     }
 
     const data = await response.json();
-    // This will now automatically save to localStorage
     setUserInfo(data);
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    return data;
   };
 
   const register = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+    
     setLoading(true);
     setError('');
 
     try {
+      // First, register the user
       const registerRes = await fetch(`${api}/register`, {
         method: 'POST',
         body: JSON.stringify(formData),
@@ -84,21 +74,11 @@ export default function RegisterPage() {
       const registerData = await registerRes.json();
 
       if (registerRes.ok) {
+        // If registration is successful, immediately log in
         await performLogin(formData);
-        navigate('/');
+        navigate('/'); // Navigate to home page after successful registration and login
       } else {
-        // Check if error is due to existing user
-        if (registerRes.status === 409 || registerData.message?.toLowerCase().includes('already exists')) {
-          try {
-            // Attempt to login with provided credentials
-            await performLogin(formData);
-            navigate('/');
-          } catch (loginErr) {
-            setError('Account exists but password is incorrect. Please try logging in instead.');
-          }
-        } else {
-          setError(registerData.message || 'Registration failed');
-        }
+        setError(registerData.message || 'Registration failed');
       }
     } catch (err) {
       setError(err.message || 'Network error. Please try again.');
@@ -131,7 +111,6 @@ export default function RegisterPage() {
           )}
 
           <div className="space-y-4 rounded-md shadow-sm">
-            {/* Username input */}
             <div>
               <label htmlFor="username" className="sr-only">
                 Username
@@ -154,30 +133,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Email input */}
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MailIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-800 sm:text-sm"
-                  placeholder="Email address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={loading}
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            {/* Password input */}
             <div>
               <label htmlFor="password" className="sr-only">
                 Password
@@ -201,7 +156,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Register button */}
           <button
             type="submit"
             disabled={loading}
