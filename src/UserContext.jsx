@@ -1,6 +1,11 @@
-import { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 
-// Create the context with default values
 export const UserContext = createContext({
   userInfo: null,
   setUserInfo: () => {},
@@ -11,10 +16,8 @@ export const UserContext = createContext({
 });
 
 export function UserContextProvider({ children }) {
-  // State management
   const [userInfo, setUserInfo] = useState(() => {
-    // Try to get initial user data from sessionStorage
-    const savedUser = sessionStorage.getItem('userInfo');
+    const savedUser = sessionStorage.getItem("userInfo");
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [loading, setLoading] = useState(true);
@@ -22,72 +25,72 @@ export function UserContextProvider({ children }) {
 
   const api = process.env.REACT_APP_API_URL;
 
-  // Update sessionStorage whenever userInfo changes
   useEffect(() => {
     if (userInfo) {
-      sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
     } else {
-      sessionStorage.removeItem('userInfo');
+      sessionStorage.removeItem("userInfo");
     }
   }, [userInfo]);
 
-  // Fetch user profile function
   const fetchUserProfile = useCallback(async () => {
     try {
       setError(null);
       const response = await fetch(`${api}/profile`, {
-        credentials: 'include',
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
         if (response.status === 401) {
-          // Clear session if unauthorized
           setUserInfo(null);
-          sessionStorage.removeItem('userInfo');
-          return;
+          sessionStorage.removeItem("userInfo");
+        } else if (response.status === 404) {
+          // Handle 404 (Not Found) case
+          setUserInfo(null);
+          sessionStorage.removeItem("userInfo");
+        } else {
+          throw new Error("Failed to fetch user profile");
         }
-        throw new Error('Failed to fetch user profile');
+      } else {
+        const data = await response.json();
+        setUserInfo(data);
+        sessionStorage.setItem("userInfo", JSON.stringify(data));
       }
-
-      const data = await response.json();
-      setUserInfo(data);
-      sessionStorage.setItem('userInfo', JSON.stringify(data));
     } catch (err) {
       setError(err.message);
       setUserInfo(null);
-      sessionStorage.removeItem('userInfo');
+      sessionStorage.removeItem("userInfo");
     } finally {
       setLoading(false);
     }
   }, [api]);
 
-  // Check authentication status on mount
   useEffect(() => {
-    fetchUserProfile();
-  }, [fetchUserProfile]);
+    if (!userInfo) {
+      fetchUserProfile();
+    }
+  }, [userInfo, fetchUserProfile]);
 
-  // Logout function
   const logout = async () => {
     try {
       setLoading(true);
       const response = await fetch(`${api}/logout`, {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
-        throw new Error('Logout failed');
+        throw new Error("Logout failed");
       }
 
-      // Clear user data from state and session
       setUserInfo(null);
-      sessionStorage.removeItem('userInfo');
+      sessionStorage.removeItem("userInfo");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -95,13 +98,31 @@ export function UserContextProvider({ children }) {
     }
   };
 
-  // Update user info function
-  const updateUserInfo = (data) => {
-    setUserInfo(data);
-    sessionStorage.setItem('userInfo', JSON.stringify(data));
+  const updateUserInfo = async (data) => {
+    try {
+      // Optimistic update
+      setUserInfo(data);
+      sessionStorage.setItem("userInfo", JSON.stringify(data));
+
+      const response = await fetch(`${api}/profile`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user profile");
+      }
+    } catch (err) {
+      // Revert state to previous value on error
+      setUserInfo(JSON.parse(sessionStorage.getItem("userInfo")));
+      setError(err.message);
+    }
   };
 
-  // Context value
   const value = {
     userInfo,
     setUserInfo: updateUserInfo,
@@ -111,18 +132,13 @@ export function UserContextProvider({ children }) {
     refreshUser: fetchUserProfile,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
-// Custom hook for using the UserContext
 export function useUser() {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserContextProvider');
+    throw new Error("useUser must be used within a UserContextProvider");
   }
   return context;
 }

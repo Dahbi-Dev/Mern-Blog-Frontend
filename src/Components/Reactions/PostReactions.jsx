@@ -14,9 +14,7 @@ const PostReactions = ({ postId }) => {
   const [selectedReactionType, setSelectedReactionType] = useState(null);
   const api = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    fetchReactions();
-  }, [postId, api]);
+;
 
   const fetchReactions = async () => {
     try {
@@ -29,6 +27,9 @@ const PostReactions = ({ postId }) => {
       console.error('Error fetching reactions:', error);
     }
   };
+  useEffect(() => {
+    fetchReactions();
+  }, [postId, api])
 
   const fetchReactionUsers = async (type) => {
     try {
