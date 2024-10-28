@@ -59,7 +59,7 @@ const Header = () => {
       setIsLoggingOut(true);
       await logout();
       setShowLogoutDialog(false);
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {

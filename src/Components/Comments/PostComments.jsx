@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { UserContext } from '../../UserContext';
 import { useNavigate } from 'react-router-dom';
 import { MessageSquare, Send, Loader2 } from 'lucide-react';
@@ -12,11 +12,7 @@ const PostComments = ({ postId }) => {
   const [loading, setLoading] = useState(false);
   const api = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`${api}/post/${postId}/comments`);
       if (!response.ok) throw new Error('Failed to fetch comments');
@@ -25,7 +21,11 @@ const PostComments = ({ postId }) => {
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  };
+  }, [api, postId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
