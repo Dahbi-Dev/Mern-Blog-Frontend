@@ -18,32 +18,23 @@ function AuthRedirect({ children }) {
   const { userInfo } = useUser();
   const location = useLocation();
 
-  // If user is logged in, redirect to '/' when accessing '/login' or '/register'
-  if (userInfo && (location.pathname === "/login" || location.pathname === "/register")) {
-    return <Navigate to="/" replace />;
+  // Redirect to '/' if user is logged in and trying to access '/login' or '/register'
+  if (
+    userInfo &&
+    (location.pathname === "/login" || location.pathname === "/register")
+  ) {
+    return null; // Do nothing, prevent navigation
   }
 
   return children;
 }
 
-// Wildcard route guard for handling unknown paths
-function UnknownRouteRedirect() {
-  const { pathname } = useLocation();
-  const { userInfo } = useUser();
-
-  // If on a post page and an unknown route is attempted, stay on the post page
-  if (pathname.startsWith("/postPage/")) {
-    return null; // Prevent navigation, stay on the post page
-  }
-
-  // Redirect all unknown routes to "/"
-  return <Navigate to="/" replace />;
-}
-
 export default function App() {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
 
     if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
       document.documentElement.classList.add("dark");
@@ -80,8 +71,8 @@ export default function App() {
             <Route path="/adminDashboard" element={<AdminDashboard />} />
             <Route path="/edit/:id" element={<Edit />} />
 
-            {/* Redirect unknown routes based on the current path */}
-            <Route path="*" element={<UnknownRouteRedirect />} />
+            {/* Redirect unknown routes to '/' */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
         <CookieConsentModal />

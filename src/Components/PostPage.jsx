@@ -143,8 +143,11 @@ export default function PostPage() {
         <img
           src={postInfo.cover}
           alt={postInfo.title}
-          className="w-full h-auto object-cover"
+          className="w-full h-60 lg:h-96 object-cover"
         />
+      <div className="border-t dark:border-gray-800 pt-6">
+        <PostReactions postId={postInfo._id} />
+      </div>
       </div>
 
       <div
@@ -152,9 +155,6 @@ export default function PostPage() {
         dangerouslySetInnerHTML={{ __html: postInfo.content }}
       />
 
-      <div className="border-t dark:border-gray-800 pt-6">
-        <PostReactions postId={postInfo._id} />
-      </div>
 
       <PostComments postId={postInfo._id} />
     </article>

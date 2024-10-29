@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Post from "./Post";
 import { PuffLoader } from "react-spinners";
+import Visitor from "./Visitor";
 
 const AllPosts = () => {
   const api = process.env.REACT_APP_API_URL;
@@ -59,8 +60,12 @@ const AllPosts = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto m px-4 sm:px-6 lg:px-8 py-28 bg-white dark:bg-gray-900">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8  bg-white dark:bg-gray-900">
+       {/* Visitor Count Display */}
+       <div className="mx-auto ">
+        <Visitor /> {/* Add the Visitor component here */}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 p-4">
         {posts.length > 0 ? (
           posts.map((post) => <Post key={post._id} {...post} />)
         ) : (

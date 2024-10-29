@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { User, Calendar } from "lucide-react";
 
 function Post({ _id, title, summary, cover, createdAt, author }) {
-  // const api = process.env.REACT_APP_API_URL;
 
   const limitText = (text, wordCount) => {
     if (!text) return "";

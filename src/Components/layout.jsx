@@ -13,25 +13,25 @@ export default function Layout() {
       setShowScrollTop(window.scrollY > 400);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
   return (
     <main className="bg-white dark:bg-gray-900 min-h-screen flex flex-col">
       <Header />
+     
       <div className="flex-grow">
         <Outlet />
       </div>
       <Footer />
-      
       {/* Scroll to Top Button */}
       {showScrollTop && (
         <button

@@ -1,16 +1,16 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { UserContext } from '../UserContext';
-import { 
-  Menu, 
-  X, 
-  LogOut, 
-  Plus, 
-  Loader2, 
-  Moon, 
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
+import {
+  Menu,
+  X,
+  LogOut,
+  Plus,
+  Loader2,
+  Moon,
   Sun,
-  AlertTriangle 
-} from 'lucide-react';
+  AlertTriangle,
+} from "lucide-react";
 
 const Header = () => {
   const { userInfo, logout, loading } = useContext(UserContext);
@@ -18,7 +18,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem('theme') === 'dark'
+    localStorage.getItem("theme") === "dark"
   );
   const navigate = useNavigate();
   const headerRef = useRef(null);
@@ -26,11 +26,11 @@ const Header = () => {
 
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
 
@@ -41,8 +41,8 @@ const Header = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const toggleDarkMode = () => {
@@ -59,9 +59,9 @@ const Header = () => {
       setIsLoggingOut(true);
       await logout();
       setShowLogoutDialog(false);
-      navigate('/');
+      navigate("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     } finally {
       setIsLoggingOut(false);
     }
@@ -75,14 +75,14 @@ const Header = () => {
 
   return (
     <>
-      <header 
+      <header
         ref={headerRef}
         className="bg-white dark:bg-gray-800 shadow-md fixed w-full top-0 z-40 transition-colors duration-200"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               onClick={handleLinkClick}
               className="text-2xl font-bold text-orange-500 hover:text-orange-600 dark:text-orange-400"
             >
@@ -117,7 +117,9 @@ const Header = () => {
                 </span>
               ) : username ? (
                 <>
-                  <span className="text-gray-600 dark:text-gray-300">Welcome, {username}!</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Welcome, {username}!
+                  </span>
                   <Link
                     to="/create"
                     onClick={handleLinkClick}
@@ -208,7 +210,7 @@ const Header = () => {
       {/* Logout Confirmation Dialog */}
       {showLogoutDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div 
+          <div
             ref={dialogRef}
             className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl"
           >
@@ -237,7 +239,7 @@ const Header = () => {
                     <span>Logging out...</span>
                   </div>
                 ) : (
-                  'Logout'
+                  "Logout"
                 )}
               </button>
             </div>
