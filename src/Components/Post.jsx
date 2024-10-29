@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { User, Calendar } from "lucide-react";
 
 function Post({ _id, title, summary, cover, createdAt, author }) {
-  const api = process.env.REACT_APP_API_URL;
+  // const api = process.env.REACT_APP_API_URL;
 
   const limitText = (text, wordCount) => {
     if (!text) return "";
@@ -22,11 +22,11 @@ function Post({ _id, title, summary, cover, createdAt, author }) {
         className="block aspect-video overflow-hidden"
       >
         <img
-          src={`${api}/${cover}`}
+          src={cover}
           alt={title}
           className="w-full h-full object-cover transition-transform hover:scale-105"
           onError={(e) => {
-            e.target.src = "/placeholder-image.jpg";
+            e.target.src = "https://placehold.co/600x400";
             e.target.onerror = null;
           }}
         />

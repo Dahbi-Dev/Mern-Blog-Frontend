@@ -141,7 +141,7 @@ export default function PostPage() {
 
       <div className="mb-8 rounded-lg overflow-hidden">
         <img
-          src={`${api}/${postInfo.cover}`}
+          src={postInfo.cover}
           alt={postInfo.title}
           className="w-full h-auto object-cover"
         />

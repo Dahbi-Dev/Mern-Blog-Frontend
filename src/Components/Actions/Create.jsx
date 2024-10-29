@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Navigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ export default function CreatePost() {
   const [content, setContent] = useState('');
   const [files, setFiles] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(false); // Spinner state
 
   const modules = {
     toolbar: [
@@ -42,6 +43,8 @@ export default function CreatePost() {
     data.set('content', content);
     data.set('file', files[0]);
 
+    setLoading(true); // Show spinner
+
     try {
       const response = await fetch(`${api}/post`, {
         method: 'POST',
@@ -58,61 +61,69 @@ export default function CreatePost() {
     } catch (error) {
       console.error('Error creating post:', error);
       alert('Failed to create post');
+    } finally {
+      setLoading(false); // Hide spinner
     }
   }
 
   if (redirect) {
     return <Navigate to={'/'} />;
   }
-    
+  
   return (
-    <form 
-      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg py-20"
-      onSubmit={createNewPost}
-    >
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Create New Post</h1>
-      
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={ev => setTitle(ev.target.value)}
-        className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-      
-      <input
-        type="text"
-        placeholder="Summary"
-        value={summary}
-        onChange={ev => setSummary(ev.target.value)}
-        className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-      
-      <input
-        type="file"
-        onChange={ev => setFiles(ev.target.files)}
-        className="w-full mb-4 p-3 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-        required
-        accept="image/*"
-      />
-      
-      <ReactQuill
-        value={content}
-        onChange={setContent}
-        theme="snow"
-        modules={modules}
-        formats={formats}
-        className="h-64 mb-4"
-      />
+    <div className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg py-20">
+      {loading ? (
+        <div className="flex items-center justify-center">
+          <div className="w-16 h-16 border-4 border-yello-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="ml-4 text-xl text-green-600">Creating post...</p>
+        </div>
+      ) : (
+        <form onSubmit={createNewPost}>
+          <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Create New Post</h1>
+          
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={ev => setTitle(ev.target.value)}
+            className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          
+          <input
+            type="text"
+            placeholder="Summary"
+            value={summary}
+            onChange={ev => setSummary(ev.target.value)}
+            className="w-full mb-4 p-3 border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          
+          <input
+            type="file"
+            onChange={ev => setFiles(ev.target.files)}
+            className="w-full mb-4 p-3 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            required
+            accept="image/*"
+          />
+          
+          <ReactQuill
+            value={content}
+            onChange={setContent}
+            theme="snow"
+            modules={modules}
+            formats={formats}
+            className="h-64 mb-4"
+          />
 
-      <button
-        className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mt-10"
-        type="submit"
-      >
-        Create Post
-      </button>
-    </form>
+          <button
+            className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mt-10"
+            type="submit"
+          >
+            Create Post
+          </button>
+        </form>
+      )}
+    </div>
   );
 }
