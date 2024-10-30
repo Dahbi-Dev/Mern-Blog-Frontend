@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,7 +8,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <p className="text-gray-600 dark:text-gray-300">
-            <span className="text-orange-500">© </span>
+            <span className="text-yellow-600">BlogStack </span>
+            <span>© </span>
             {currentYear} All rights reserved.
           </p>
         </div>

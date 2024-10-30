@@ -1,9 +1,44 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import { User, Calendar } from "lucide-react";
+import { User, Calendar, MessageCircle, Heart, ThumbsUp, ThumbsDown, Flame } from "lucide-react";
 
 function Post({ _id, title, summary, cover, createdAt, author }) {
+  const [reactions, setReactions] = useState({
+    likes: 0,
+    dislikes: 0,
+    loves: 0,
+    fires: 0,
+  });
+  const [comments, setComments] = useState([]);
+  const api = process.env.REACT_APP_API_URL;
+
+  const fetchReactions = useCallback(async () => {
+    try {
+      const response = await fetch(`${api}/post/${_id}/reactions`);
+      if (!response.ok) throw new Error('Failed to fetch reactions');
+      const data = await response.json();
+      setReactions(data);
+    } catch (error) {
+      console.error('Error fetching reactions:', error);
+    }
+  }, [api, _id]);
+
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await fetch(`${api}/post/${_id}/comments`);
+      if (!response.ok) throw new Error('Failed to fetch comments');
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }, [api, _id]);
+
+  useEffect(() => {
+    fetchReactions();
+    fetchComments();
+  }, [fetchReactions, fetchComments]);
 
   const limitText = (text, wordCount) => {
     if (!text) return "";
@@ -13,9 +48,38 @@ function Post({ _id, title, summary, cover, createdAt, author }) {
       : text;
   };
 
+  const ReactionIcon = ({ type, count, icon: Icon }) => {
+    const getIconStyle = () => {
+      if (count === 0) {
+        return "text-gray-400 dark:text-gray-500";
+      }
+
+      const styles = {
+        like: "text-blue-500 dark:text-blue-400",
+        love: "text-red-500 dark:text-red-400",
+        fire: "text-orange-500 dark:text-orange-400",
+        dislike: "text-gray-600 dark:text-gray-400"
+      };
+      return styles[type];
+    };
+
+    const getTextStyle = () => {
+      if (count === 0) {
+        return "text-gray-400 dark:text-gray-500";
+      }
+      return "text-gray-600 dark:text-gray-300";
+    };
+
+    return (
+      <div className="flex items-center gap-1">
+        <Icon className={`w-4 h-4 ${getIconStyle()}`} />
+        <span className={getTextStyle()}>{count}</span>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-
       <Link
         to={`/postPage/${_id}`}
         className="block aspect-video overflow-hidden"
@@ -50,8 +114,29 @@ function Post({ _id, title, summary, cover, createdAt, author }) {
         </div>
 
         <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
-          {limitText(summary, 15)}
+          {limitText(summary, 8)}
         </p>
+
+        <div className="flex items-center gap-4 mt-4 text-sm">
+          <Link 
+            to={`/postPage/${_id}`} 
+            className={`flex items-center gap-1 ${
+              comments.length > 0 
+                ? "text-blue-500 dark:text-blue-400" 
+                : "text-gray-400 dark:text-gray-500"
+            }`}
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>{comments.length}</span>
+          </Link>
+          
+          <div className="flex items-center gap-3">
+            <ReactionIcon type="like" count={reactions.likes} icon={ThumbsUp} />
+            <ReactionIcon type="love" count={reactions.loves} icon={Heart} />
+            <ReactionIcon type="fire" count={reactions.fires} icon={Flame} />
+            <ReactionIcon type="dislike" count={reactions.dislikes} icon={ThumbsDown} />
+          </div>
+        </div>
       </div>
     </div>
   );

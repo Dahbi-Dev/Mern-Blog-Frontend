@@ -29,19 +29,6 @@ const PostReactions = ({ postId }) => {
   const [selectedReactionType, setSelectedReactionType] = useState(null);
   const api = process.env.REACT_APP_API_URL;
 
-  const fetchUserReaction = useCallback(async () => {
-    if (!userInfo) return;
-    try {
-      const response = await fetch(`${api}/post/${postId}/reactions/user`, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      setUserReaction(data.type);
-    } catch (error) {
-      console.error("Error fetching user reaction:", error);
-    }
-  }, [api, postId, userInfo]);
-
   const fetchReactions = useCallback(async () => {
     try {
       const response = await fetch(`${api}/post/${postId}/reactions`);
@@ -54,8 +41,7 @@ const PostReactions = ({ postId }) => {
 
   useEffect(() => {
     fetchReactions();
-    fetchUserReaction();
-  }, [fetchReactions, fetchUserReaction]);
+  }, [fetchReactions]);
 
   const fetchReactionUsers = async (type) => {
     try {
@@ -153,7 +139,7 @@ const PostReactions = ({ postId }) => {
   return (
     <div className="relative">
       <div className="flex items-center gap-2">
-        <ReactionGroup type="like" icon={ThumbsUp} count={reactions.likes} />
+        <ReactionGroup className="text-" type="like" icon={ThumbsUp} count={reactions.likes} />
         <ReactionGroup type="love" icon={Heart} count={reactions.loves} />
         <ReactionGroup type="fire" icon={Flame} count={reactions.fires} />
         <ReactionGroup
@@ -201,7 +187,7 @@ const PostReactions = ({ postId }) => {
                   No reactions yet Or you are not Logged in
                 </p>
               )}
-            </div> 
+            </div>
           </div>
         </div>
       )}

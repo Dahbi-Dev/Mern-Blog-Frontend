@@ -60,12 +60,12 @@ const AllPosts = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8  bg-white dark:bg-gray-900">
+    <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8  bg-white dark:bg-gray-900 mb-10">
        {/* Visitor Count Display */}
-       <div className="mx-auto ">
+       <div className="mx-auto p-3">
         <Visitor /> {/* Add the Visitor component here */}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 p-3">
         {posts.length > 0 ? (
           posts.map((post) => <Post key={post._id} {...post} />)
         ) : (
