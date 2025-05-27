@@ -10,18 +10,23 @@ import {
   Moon,
   Sun,
   AlertTriangle,
+  User,
+  Settings,
+  UserCog,
 } from "lucide-react";
 
 const Header = () => {
   const { userInfo, logout, loading } = useContext(UserContext);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
   const navigate = useNavigate();
   const headerRef = useRef(null);
+  const profileMenuRef = useRef(null);
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -39,6 +44,9 @@ const Header = () => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -52,6 +60,7 @@ const Header = () => {
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
     setIsMenuOpen(false);
+    setIsProfileMenuOpen(false);
   };
 
   const handleLogout = async () => {
@@ -69,9 +78,12 @@ const Header = () => {
 
   const handleLinkClick = () => {
     setIsMenuOpen(false);
+    setIsProfileMenuOpen(false);
   };
 
   const username = userInfo?.username;
+  const isAdmin = userInfo?.isAdmin;
+  const profileImage = userInfo?.profileImage;
 
   return (
     <>
@@ -128,13 +140,65 @@ const Header = () => {
                     <Plus size={18} />
                     Create new post
                   </Link>
-                  <button
-                    onClick={handleLogoutClick}
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-                  >
-                    <LogOut size={18} />
-                    Logout
-                  </button>
+                  
+                  {/* Profile Menu */}
+                  <div className="relative" ref={profileMenuRef}>
+                    <button
+                      onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                      className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      {profileImage ? (
+                        <img
+                          src={profileImage}
+                          alt="Profile"
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-medium">
+                          {username.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </button>
+                    
+                    {isProfileMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700">
+                        <Link
+                          to="/profile"
+                          onClick={handleLinkClick}
+                          className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <User size={16} />
+                          Profile
+                        </Link>
+                        <Link
+                          to="/settings"
+                          onClick={handleLinkClick}
+                          className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <Settings size={16} />
+                          Settings
+                        </Link>
+                        {isAdmin && (
+                          <Link
+                            to="/admin"
+                            onClick={handleLinkClick}
+                            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <UserCog size={16} />
+                            Admin Panel
+                          </Link>
+                        )}
+                        <hr className="border-gray-200 dark:border-gray-700" />
+                        <button
+                          onClick={handleLogoutClick}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <LogOut size={16} />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
                 <>
@@ -165,9 +229,22 @@ const Header = () => {
                 </span>
               ) : username ? (
                 <>
-                  <span className="block text-gray-600 dark:text-gray-300 px-4 py-2">
-                    Welcome, {username}!
-                  </span>
+                  <div className="flex items-center gap-3 px-4 py-2">
+                    {profileImage ? (
+                      <img
+                        src={profileImage}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-medium">
+                        {username.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Welcome, {username}!
+                    </span>
+                  </div>
                   <Link
                     to="/create"
                     onClick={handleLinkClick}
@@ -176,6 +253,32 @@ const Header = () => {
                     <Plus size={18} />
                     Create new post
                   </Link>
+                  <Link
+                    to="/profile"
+                    onClick={handleLinkClick}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2"
+                  >
+                    <User size={18} />
+                    Profile
+                  </Link>
+                  <Link
+                    to="/settings"
+                    onClick={handleLinkClick}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2"
+                  >
+                    <Settings size={18} />
+                    Settings
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={handleLinkClick}
+                      className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2"
+                    >
+                      <UserCog size={18} />
+                      Admin Panel
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogoutClick}
                     className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 w-full px-4 py-2 text-left"
